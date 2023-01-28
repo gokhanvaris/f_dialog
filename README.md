@@ -29,7 +29,18 @@ Dialogs contents support localization.
 ## Images
 
 
+<table>
+  <tr>
+    <td><img src="https://raw.githubusercontent.com/gokhanvaris/f_dialog/main/1.png" alt="" width="200"></td>
+    <td><img src="https://raw.githubusercontent.com/gokhanvaris/f_dialog/main/2.png" alt="" width="200"></td>
+    <td><img src="https://raw.githubusercontent.com/gokhanvaris/f_dialog/main/3.png" alt="" width="200"></td>
+    <td><img src="https://raw.githubusercontent.com/gokhanvaris/f_dialog/main/4.png" alt="" width="200"></td>
+    <td><img src="https://raw.githubusercontent.com/gokhanvaris/f_dialog/main/5.png" alt="" width="200"></td>
 
+
+
+  </tr>
+</table>
 
 
 
