@@ -1,6 +1,6 @@
 name: f_dialog
-description: Flutter Dialogs.
-version: 0.0.1
+description: Flutter Alert Dialogs for any screen.
+version: 0.0.3
 homepage: https://github.com/gokhanvaris/f_dialog
 
 environment:

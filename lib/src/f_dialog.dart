@@ -32,7 +32,39 @@ class FDialog extends InheritedWidget {
         context,
         dialogType: dialogType,
       );
-
+  Future custom(
+    BuildContext context, {
+    required bool isDismissible,
+    required Function onConfirm,
+    required Function onCancel,
+    required Icon icon,
+    required String onConfirmText,
+    required String onCancelText,
+    required String customDialogTitle,
+    required String customDialogBody,
+    required TextStyle titleTextStyle,
+    required TextStyle contentTextStyle,
+    required ButtonStyle onConfirmButtonStyle,
+    required ButtonStyle onCancelButtonStyle,
+    required Color backgroundColor,
+  }) =>
+      _dialog.custom(
+        context,
+        icon,
+        onConfirm: onConfirm,
+        onCancel: onCancel,
+        onConfirmText: onConfirmText,
+        backgroundColor: backgroundColor,
+        onCancelText: onCancelText,
+        isDismissible: isDismissible,
+        customDialogTitle: customDialogTitle,
+        customDialogBody: customDialogBody,
+        titleTextStyle: titleTextStyle,
+        contentTextStyle: contentTextStyle,
+        onConfirmButtonStyle:
+            onConfirmButtonStyle,
+        onCancelButtonStyle: onCancelButtonStyle,
+      );
   static void close(
     BuildContext context, [
     DialogTypeEnums? specificDialog,
@@ -89,6 +121,57 @@ class _Dialog {
             context: context,
           ),
         ),
+      ),
+    ).then((_) => activeDialogs.removeLast());
+  }
+
+  Future custom(
+    BuildContext context,
+    Icon icon, {
+    required bool isDismissible,
+    required Function onConfirm,
+    required Function onCancel,
+    required String onCancelText,
+    required String onConfirmText,
+    required String customDialogTitle,
+    required String customDialogBody,
+    required TextStyle titleTextStyle,
+    required TextStyle contentTextStyle,
+    required ButtonStyle onConfirmButtonStyle,
+    required ButtonStyle onCancelButtonStyle,
+    required Color backgroundColor,
+  }) {
+    _logger('Custom dialog is shown.');
+    activeDialogs.add(DialogTypeEnums.custom);
+
+    return showDialog(
+      context: context,
+      barrierDismissible: isDismissible,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => isDismissible,
+        child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: AlertDialog(
+              backgroundColor: backgroundColor,
+              icon: icon,
+              title: Text(customDialogTitle),
+              titleTextStyle: titleTextStyle,
+              actionsOverflowButtonSpacing: 20,
+              actions: [
+                ElevatedButton(
+                    style: onCancelButtonStyle,
+                    onPressed: () => onCancel(),
+                    child: Text(onCancelText)),
+                ElevatedButton(
+                    style: onConfirmButtonStyle,
+                    onPressed: () => onConfirm(),
+                    child: Text(onConfirmText)),
+              ],
+              content: Text(
+                customDialogBody,
+                style: contentTextStyle,
+              ),
+            )),
       ),
     ).then((_) => activeDialogs.removeLast());
   }

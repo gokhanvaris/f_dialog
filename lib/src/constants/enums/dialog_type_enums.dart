@@ -4,4 +4,5 @@ enum DialogTypeEnums {
   error,
   success,
   failed,
+  custom,
 }
