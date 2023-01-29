@@ -8,4 +8,4 @@ Bugs fixed
 
 ## 0.0.3 
 
-Custom Dialog feature added
+Custom Dialog feature added.
