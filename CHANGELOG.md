@@ -9,3 +9,7 @@ Bugs fixed
 ## 0.0.3 
 
 Custom Dialog feature added.
+
+## 0.0.4 
+
+Added icon and padding features.
