@@ -1,22 +1,19 @@
+import 'package:f_dialog/f_dialog.dart';
 import 'package:flutter/material.dart';
-
-import '../models/localization.dart';
 
 class SuccessAlert extends StatelessWidget {
   const SuccessAlert({
-    Key? key,
     required this.localization,
-  }) : super(key: key);
+    required this.icon,
+  });
 
   final Localization localization;
+  final Icon icon;
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      icon: const Icon(
-        Icons.done,
-        size: 44.0,
-      ),
+      icon: icon,
       iconColor: Colors.green,
       title: Text(localization.successTitle),
       content: Text(localization.successContent),

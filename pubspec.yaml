@@ -4,7 +4,7 @@ version: 0.0.3
 homepage: https://github.com/gokhanvaris/f_dialog
 
 environment:
-  sdk: '>=2.12.4 <3.0.0'
+  sdk: '>=2.17.0 <3.0.0'
   flutter: ">=1.17.0"
 
 dependencies:
@@ -14,8 +14,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-y  flutter_lints: ^2.0.0
-
+  flutter_lints: ^2.0.0
+  very_good_analysis: ^3.1.0
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
