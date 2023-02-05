@@ -101,10 +101,14 @@ class _MyAppState extends State<MyApp> {
 ## To create a dialog
 
 ```dart
-   FDialog.of(context).show(
+   FDialog.of(context)?.show(
               context,
-              dialogType:
-                  DialogTypeEnums.progress,
+              dialogType: DialogTypeEnums.success,
+              icon: const Icon(
+                Icons.safety_check_rounded,
+              ),
+              customPadding:
+                  const EdgeInsets.all(20),
             );
 ```
 

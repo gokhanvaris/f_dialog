@@ -1,36 +1,34 @@
 import 'dart:developer';
 
+import 'package:f_dialog/f_dialog.dart';
 import 'package:flutter/material.dart';
-
-import 'constants/enums/dialog_type_enums.dart';
-import 'models/localization.dart';
-import 'widgets/error_alert.dart';
-import 'widgets/fail_alert.dart';
-import 'widgets/info_alert.dart';
-import 'widgets/progress_dialog.dart';
-import 'widgets/success_alert.dart';
 
 class FDialog extends InheritedWidget {
   FDialog({
-    Key? key,
-    required Widget child,
+    super.key,
+    required super.child,
     required ThemeData theme,
-  })  : _dialog = _Dialog(theme: theme),
-        super(key: key, child: child);
+  }) : _dialog = _Dialog(theme: theme);
 
   final _Dialog _dialog;
 
-  void setLocalization(
-          Localization localization) =>
+  Localization setLocalization(
+    Localization localization,
+  ) =>
       _dialog.localization = localization;
 
   Future show(
     BuildContext context, {
+    Icon? icon,
+    EdgeInsetsGeometry? customPadding =
+        const EdgeInsets.all(10),
     required DialogTypeEnums dialogType,
   }) =>
       _dialog.show(
         context,
         dialogType: dialogType,
+        customPadding ?? const EdgeInsets.all(20),
+        icon,
       );
   Future custom(
     BuildContext context, {
@@ -69,9 +67,9 @@ class FDialog extends InheritedWidget {
     BuildContext context, [
     DialogTypeEnums? specificDialog,
   ]) {
-    final dialog = FDialog.of(context)._dialog;
+    final dialog = FDialog.of(context)?._dialog;
 
-    dialog.hide(context, specificDialog);
+    dialog?.hide(context, specificDialog);
   }
 
   void hide(
@@ -82,11 +80,12 @@ class FDialog extends InheritedWidget {
 
   @override
   bool updateShouldNotify(
-      covariant InheritedWidget oldWidget) {
+    covariant InheritedWidget oldWidget,
+  ) {
     return false;
   }
 
-  static dynamic of(BuildContext context) =>
+  static FDialog? of(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<
           FDialog>();
 }
@@ -96,11 +95,12 @@ class _Dialog {
 
   final ThemeData theme;
   late Localization localization;
-
   final List<DialogTypeEnums> activeDialogs = [];
 
   Future show(
-    BuildContext context, {
+    BuildContext context,
+    EdgeInsetsGeometry? customPadding,
+    Icon? icon, {
     required DialogTypeEnums dialogType,
   }) {
     activeDialogs.add(dialogType);
@@ -115,8 +115,11 @@ class _Dialog {
       builder: (context) => WillPopScope(
         onWillPop: () async => isDismissible,
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: customPadding ??
+              const EdgeInsets.all(20),
           child: _getDialog(
+            icon: icon ??
+                _getIcon(dialogType: dialogType),
             dialogType: dialogType,
             context: context,
           ),
@@ -150,47 +153,86 @@ class _Dialog {
       builder: (context) => WillPopScope(
         onWillPop: () async => isDismissible,
         child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: AlertDialog(
-              backgroundColor: backgroundColor,
-              icon: icon,
-              title: Text(customDialogTitle),
-              titleTextStyle: titleTextStyle,
-              actionsOverflowButtonSpacing: 20,
-              actions: [
-                ElevatedButton(
-                    style: onCancelButtonStyle,
-                    onPressed: () => onCancel(),
-                    child: Text(onCancelText)),
-                ElevatedButton(
-                    style: onConfirmButtonStyle,
-                    onPressed: () => onConfirm(),
-                    child: Text(onConfirmText)),
-              ],
-              content: Text(
-                customDialogBody,
-                style: contentTextStyle,
+          padding: const EdgeInsets.all(20),
+          child: AlertDialog(
+            backgroundColor: backgroundColor,
+            icon: icon,
+            title: Text(customDialogTitle),
+            titleTextStyle: titleTextStyle,
+            actionsOverflowButtonSpacing: 20,
+            actions: [
+              ElevatedButton(
+                style: onCancelButtonStyle,
+                onPressed: () => onCancel(),
+                child: Text(onCancelText),
               ),
-            )),
+              ElevatedButton(
+                style: onConfirmButtonStyle,
+                onPressed: () => onConfirm(),
+                child: Text(onConfirmText),
+              ),
+            ],
+            content: Text(
+              customDialogBody,
+              style: contentTextStyle,
+            ),
+          ),
+        ),
       ),
     ).then((_) => activeDialogs.removeLast());
   }
 
-  void hide(BuildContext context,
-      [DialogTypeEnums? specificDialog]) {
+  void hide(
+    BuildContext context, [
+    DialogTypeEnums? specificDialog,
+  ]) {
     if (activeDialogs.isNotEmpty) {
       if (specificDialog == null ||
           specificDialog == activeDialogs.last) {
         Navigator.pop(context);
         _logger(
-            '(${specificDialog ?? activeDialogs.last}) is closed.');
+          '(${specificDialog ?? activeDialogs.last}) is closed.',
+        );
       }
+    }
+  }
+
+  Icon _getIcon({
+    required DialogTypeEnums dialogType,
+  }) {
+    switch (dialogType) {
+      case DialogTypeEnums.success:
+        return const Icon(
+          Icons.done,
+          size: 44,
+        );
+
+      case DialogTypeEnums.error:
+        return const Icon(
+          Icons.error,
+          size: 44,
+        );
+      case DialogTypeEnums.failed:
+        return const Icon(
+          Icons.warning,
+          size: 44,
+        );
+      case DialogTypeEnums.info:
+        return const Icon(
+          Icons.info,
+          size: 44,
+        );
+
+      // ignore: no_default_cases
+      default:
+        return const Icon(Icons.abc);
     }
   }
 
   Widget _getDialog({
     required DialogTypeEnums dialogType,
     required BuildContext context,
+    required Icon icon,
   }) {
     switch (dialogType) {
       case DialogTypeEnums.progress:
@@ -201,17 +243,26 @@ class _Dialog {
 
       case DialogTypeEnums.success:
         return SuccessAlert(
-            localization: localization);
+          icon: icon,
+          localization: localization,
+        );
 
       case DialogTypeEnums.error:
         return ErrorAlert(
-            localization: localization);
+          icon: icon,
+          localization: localization,
+        );
       case DialogTypeEnums.failed:
         return FailAlert(
-            localization: localization);
+          icon: icon,
+          localization: localization,
+        );
       case DialogTypeEnums.info:
         return InfoAlert(
-            localization: localization);
+          icon: icon,
+          localization: localization,
+        );
+
       default:
         return Container();
     }
